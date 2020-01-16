@@ -4,41 +4,8 @@ function initialize() {
   initializeFirebase();
 
   captureSubmitEventWhenAddingAnItem();
-  captureEditAction();
   downloadItems();
 }
-
-
-function captureEditAction() {
-  var editItem = document.getElementsByClassName("editor");
-  for (i = 0; i < editItem.length; i++) {
-  editItem[i].addEventListener("click", editItem);
-  }
-}
-
-function editItem(event) {
-  var itemToEdit = event.target;
-  var editForm = ""
-  editForm +=
-  '<form id="form-item">' +
-    '<div class="form-group">' +
-      '<label for="type">Item Type</label>' +
-      '<input type="text" class="form-control" id="type" name="type" />' +
-    '</div>' +
-    '<div class="form-group">' +
-      '<label for="stock">Stock</label>' +
-      '<input type="number" class="form-control" id="stock" name="stock" />' +
-    '</div>' +
-    '<div class="form-group">' +
-      '<label for="price">Price</label>' +
-      '<input type="number" class="form-control" id="price" name="price" />' +
-    '</div>' +
-    '<button id="create-element" type="submit" class="btn btn-primary"> Create an Item </button>' +
-  '</form>'
-
-  itemToEdit.innerHTML = editForm;
-}
-
 
 function captureSubmitEventWhenAddingAnItem() {
   document.getElementById("form-item").addEventListener("submit", addItem);
