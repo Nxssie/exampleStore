@@ -1,0 +1,15 @@
+.editor {
+  margin: 1em;
+}
+
+#edit-element {
+  display: none;
+}
+
+#create-element {
+  display: inline-block;
+}
+
+#cancel-button {
+  display: none;
+}

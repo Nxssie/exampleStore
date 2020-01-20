@@ -1,5 +1,10 @@
 window.onload = initialize;
 
+const ADD = "add";
+const UPDATE = "update";
+var operation = ADD;
+var keyItem;
+
 function initialize() {
   initializeFirebase();
 
@@ -8,22 +13,48 @@ function initialize() {
 }
 
 function captureSubmitEventWhenAddingAnItem() {
-  document.getElementById("form-item").addEventListener("submit", addItem);
+  document
+    .getElementById("form-item")
+    .addEventListener("submit", addOrUpdateItem);
 }
 
-function addItem(event) {
+function addOrUpdateItem(event) {
   event.preventDefault();
+
   var formItem = event.target;
 
-  var refItemToAdd = firebase.database().ref("store/items");
+  if (operation == ADD) {
+    var refItem = firebase.database().ref("store/items");
 
-  refItemToAdd.push({
-    type: formItem.type.value,
-    stock: formItem.stock.value,
-    price: formItem.price.value
-  });
+    refItem.push({
+      type: formItem.type.value,
+      stock: formItem.stock.value,
+      price: formItem.price.value
+    });
 
-  formItem.reset();
+    formItem.reset();
+  } else {
+    refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+
+    refItemToEdit.update({
+      type: formItem.type.value,
+      stock: formItem.stock.value,
+      price: formItem.price.value
+    });
+    
+    document.getElementById("cancel-button").addEventListener("reset", updateCancelButton);
+    document.getElementById("edit-element").style.display = "none";
+    document.getElementById("cancel-button").style.display = "none";
+    document.getElementById("create-element").style.display = "inline-block";
+
+    formItem.reset();
+  }
+}
+
+function updateCancelButton() {
+  document.getElementById("edit-element").style.display = "none";
+  document.getElementById("cancel-button").style.display = "none";
+  document.getElementById("create-element").style.display = "inline-block";
 }
 
 function initializeFirebase() {
@@ -78,8 +109,10 @@ function showItems(snap) {
 
   /* User actions */
   var removers = document.getElementsByClassName("remover");
+  var editors = document.getElementsByClassName("editor");
   for (var i = 0; i < removers.length; i++) {
     removers[i].addEventListener("click", deleteItem);
+    editors[i].addEventListener("click", editItem);
   }
 }
 
@@ -91,4 +124,25 @@ function deleteItem(event) {
     .database()
     .ref("store/items/" + keyItemToDelete);
   refItemToDelete.remove();
+}
+
+function editItem(event) {
+  document.getElementById("edit-element").style.display = "inline-block";
+  document.getElementById("cancel-button").style.display = "inline-block";
+  document.getElementById("create-element").style.display = "none";
+  operation = UPDATE;
+
+  var buttonClicked = event.target;
+
+  var formItem = document.getElementById("form-item");
+
+  keyItem = buttonClicked.getAttribute("data-item");
+  var refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+  refItemToEdit.once("value", function(snap) {
+    var data = snap.val();
+    formItem.type.value = data.type;
+    formItem.stock.value = data.stock;
+    formItem.price.value = data.price;
+  });
+
 }
