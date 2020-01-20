@@ -5,17 +5,24 @@ const UPDATE = "update";
 var operation = ADD;
 var keyItem;
 
+const cancelButton = document.getElementById("cancel-button");
+const editButton = document.getElementById("edit-element");
+const createButton = document.getElementById("create-element");
+
 function initialize() {
   initializeFirebase();
 
   captureSubmitEventWhenAddingAnItem();
+  captureFormCancel();
   downloadItems();
 }
 
 function captureSubmitEventWhenAddingAnItem() {
-  document
-    .getElementById("form-item")
-    .addEventListener("submit", addOrUpdateItem);
+  document.getElementById("form-item").addEventListener("submit", addOrUpdateItem);
+}
+
+function captureFormCancel() {
+  document.getElementById("form-item").addEventListener("reset", cancelEditing);
 }
 
 function addOrUpdateItem(event) {
@@ -42,19 +49,18 @@ function addOrUpdateItem(event) {
       price: formItem.price.value
     });
     
-    document.getElementById("cancel-button").addEventListener("reset", updateCancelButton);
-    document.getElementById("edit-element").style.display = "none";
-    document.getElementById("cancel-button").style.display = "none";
-    document.getElementById("create-element").style.display = "inline-block";
+    editButton.style.display = "none";
+    cancelButton.style.display = "none";
+    createButton.style.display = "inline-block";
 
     formItem.reset();
   }
 }
 
-function updateCancelButton() {
-  document.getElementById("edit-element").style.display = "none";
-  document.getElementById("cancel-button").style.display = "none";
-  document.getElementById("create-element").style.display = "inline-block";
+function cancelEditing() {
+  editButton.style.display = "none";
+  cancelButton.style.display = "none";
+  createButton.style.display = "inline-block";
 }
 
 function initializeFirebase() {
