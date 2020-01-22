@@ -23,7 +23,7 @@
       crossorigin="anonymous"
     />
     <!-- Own CSS-->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <div class="container">
@@ -44,15 +44,18 @@
       <form id="form-item">
         <div class="form-group">
           <label for="type">Item Type</label>
-          <input type="text" class="form-control" id="type" name="type" />
+          <input type="text" class="form-control" id="type" name="type"/>
+          <span id="type-error">* Tipo de producto no válido.</span>
         </div>
         <div class="form-group">
           <label for="stock">Stock</label>
-          <input type="number" class="form-control" id="stock" name="stock" />
+          <input type="number" class="form-control" id="stock" name="stock"/>
+          <span id="stock-error">* Stock de producto no válido.</span>
         </div>
         <div class="form-group">
           <label for="price">Price</label>
-          <input type="number" class="form-control" id="price" name="price" />
+          <input type="number" class="form-control" id="price" name="price"/>
+          <span id="price-error">* Precio de producto no válido.</span>
         </div>
         <button id="create-element" type="submit" class="btn btn-primary"> Create an Item </button>
         <button id="edit-element" type="submit" class="btn btn-primary"> Update an Item </button>

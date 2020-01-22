@@ -4,10 +4,12 @@ const ADD = "add";
 const UPDATE = "update";
 var operation = ADD;
 var keyItem;
+var validated = 0;
 
 const cancelButton = document.getElementById("cancel-button");
 const editButton = document.getElementById("edit-element");
 const createButton = document.getElementById("create-element");
+const formItem = document.getElementById("form-item");
 
 function initialize() {
   initializeFirebase();
@@ -17,52 +19,106 @@ function initialize() {
   downloadItems();
 }
 
-function captureSubmitEventWhenAddingAnItem() {
-  document.getElementById("form-item").addEventListener("submit", addOrUpdateItem);
-}
+// Sick of validations, i really hate them :c
+function validateForm(event) {
 
-function captureFormCancel() {
-  document.getElementById("form-item").addEventListener("reset", cancelEditing);
-}
-
-function addOrUpdateItem(event) {
   event.preventDefault();
 
-  var formItem = event.target;
+  const formToValidate = formItem;
+  const formItemType = formToValidate["type"].value;
+  const formItemStock = formToValidate["stock"].value;
+  const formItemPrice = formToValidate["price"].value;
 
-  if (operation == ADD) {
-    var refItem = firebase.database().ref("store/items");
-
-    refItem.push({
-      type: formItem.type.value,
-      stock: formItem.stock.value,
-      price: formItem.price.value
-    });
-
-    formItem.reset();
+  //Errors validations
+  if (!formItemType || typeof formItemType != 'string' || formItemType instanceof String) {
+    console.log("Error de tipo de producto.");
+    document.getElementById("type-error").style.display = "block";
+    event.preventDefault();
+  } else if (!formItemStock || formItemStock <=0 || isNaN(formItemStock)) {
+    console.log("Error de stock.");
+    document.getElementById("stock-error").style.display = "block";
+    event.preventDefault();
+  } else if (!formItemPrice || formItemPrice <= 0 || isNaN(formItemPrice)) {
+    console.log("Error de precio");
+    document.getElementById("price-error").style.display = "block";
+    event.preventDefault();
   } else {
-    refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+    document.getElementById("type-error").style.display = "none";
+    document.getElementById("stock-error").style.display = "none";
+    document.getElementById("price-error").style.display = "none";
+    validated = 1;
+    addOrUpdateItem();
+  }
+  
+  //Clear errors in each case
+  if (formItemType) {
+    document.getElementById("type-error").style.display = "none";
+  }
+  if (formItemStock) {
+    document.getElementById("stock-error").style.display = "none";
+  }
+  if (formItemPrice) {
+    document.getElementById("price-error").style.display = "none";
+  }
 
-    refItemToEdit.update({
-      type: formItem.type.value,
-      stock: formItem.stock.value,
-      price: formItem.price.value
-    });
-    
-    editButton.style.display = "none";
-    cancelButton.style.display = "none";
-    createButton.style.display = "inline-block";
+}
 
-    formItem.reset();
+// Words enough :rotfl
+function captureSubmitEventWhenAddingAnItem() {
+  formItem.addEventListener("submit", validateForm);
+}
+
+// Just capturing the cancel of an editing action
+function captureFormCancel() {
+  formItem.addEventListener("reset", cancelEditing);
+}
+
+// Adding some things to my inventory 
+function addOrUpdateItem() {
+  if (validated == 1) {
+    if (operation == ADD) {
+      var refItem = firebase.database().ref("store/items");
+  
+      refItem.push({
+        type: formItem.type.value,
+        stock: formItem.stock.value,
+        price: formItem.price.value
+      });
+  
+      formItem.reset();
+    } else {
+      refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+  
+      refItemToEdit.update({
+        type: formItem.type.value,
+        stock: formItem.stock.value,
+        price: formItem.price.value
+      });
+      
+      editButton.style.display = "none";
+      cancelButton.style.display = "none";
+      createButton.style.display = "inline-block";
+  
+      formItem.reset();
+    }
+  } else {
+    console.log("Error general.");
   }
 }
 
+// THE HOLY CANCEL FUNCTION
 function cancelEditing() {
   editButton.style.display = "none";
   cancelButton.style.display = "none";
   createButton.style.display = "inline-block";
+
+  //In case of existing errors, cancel button clears them
+  document.getElementById("type-error").style.display = "none";
+  document.getElementById("stock-error").style.display = "none";
+  document.getElementById("price-error").style.display = "none";
 }
 
+// This is the most boring part of the code, just close your eyes, please
 function initializeFirebase() {
   var firebaseConfig = {
     apiKey: "AIzaSyAmDr6GpyPE4utgKJTLAZzjUbIwXJ767Ls",
@@ -78,6 +134,7 @@ function initializeFirebase() {
   console.log("firebase initializated");
 }
 
+// YEY visualizing!!
 function downloadItems() {
   var items = firebase.database().ref("store/items");
   items.on("value", showItems);
@@ -122,6 +179,7 @@ function showItems(snap) {
   }
 }
 
+// See you again https://www.youtube.com/watch?v=RgKAFK5djSk
 function deleteItem(event) {
   var buttonClicked = event.target;
 
@@ -132,6 +190,7 @@ function deleteItem(event) {
   refItemToDelete.remove();
 }
 
+// Im not happy with those items so I'm gonna change them
 function editItem(event) {
   document.getElementById("edit-element").style.display = "inline-block";
   document.getElementById("cancel-button").style.display = "inline-block";

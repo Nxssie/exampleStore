@@ -1,0 +1,36 @@
+.editor {
+  margin: 1em;
+}
+
+#edit-element {
+  display: none;
+}
+
+#create-element {
+  display: inline-block;
+}
+
+#cancel-button {
+  display: none;
+}
+
+#type-error {
+display: none;
+color: red;
+font-style: oblique;
+font-size: 11px;
+}
+
+#stock-error {
+  display: none;
+  color: red;
+  font-style: oblique;
+  font-size: 11px;
+}
+
+#price-error {
+  display: none;
+  color: red;
+  font-style: oblique;
+  font-size: 11px;
+}
