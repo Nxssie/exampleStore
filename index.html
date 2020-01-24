@@ -43,13 +43,22 @@
 
       <form id="form-item">
         <div class="form-group">
-          <label for="type">Item Type</label>
-          <input type="text" class="form-control" id="type" name="type"/>
+          <label for="type">Tipo de producto:</label>
+          <select class="form-control" id="type">
+            <option value=""></option>
+            <option value="itemType1">itemType1</option>
+            <option value="itemType2">itemType2</option>
+            <option value ="itemType3">itemType3</option>
+            <option value="itemType4">itemType4</option>
+          </select>
           <span id="type-error">* Tipo de producto no válido.</span>
         </div>
         <div class="form-group">
           <label for="stock">Stock</label>
           <input type="number" class="form-control" id="stock" name="stock"/>
+          <label class="form-check-label stock-check">
+            <input type="checkbox" class="form-check-input" id="noexistences" name="noexistences">Sin existencias
+          </label>
           <span id="stock-error">* Stock de producto no válido.</span>
         </div>
         <div class="form-group">

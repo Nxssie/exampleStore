@@ -22,6 +22,7 @@ function initialize() {
 // Sick of validations, i really hate them :c
 function validateForm(event) {
 
+  
   event.preventDefault();
 
   const formToValidate = formItem;
@@ -29,16 +30,21 @@ function validateForm(event) {
   const formItemStock = formToValidate["stock"].value;
   const formItemPrice = formToValidate["price"].value;
 
+  if (formItem.noexistences.checked) {
+    formItem.stock.value = 0;
+  }
+
   //Errors validations
   if (!formItemType || typeof formItemType != 'string' || formItemType instanceof String) {
     console.log("Error de tipo de producto.");
     document.getElementById("type-error").style.display = "block";
     event.preventDefault();
-  } else if (!formItemStock || formItemStock <=0 || isNaN(formItemStock)) {
+  } else if (!formItemStock || formItemStock <0) {
+    console.log(formItemStock);
     console.log("Error de stock.");
     document.getElementById("stock-error").style.display = "block";
     event.preventDefault();
-  } else if (!formItemPrice || formItemPrice <= 0 || isNaN(formItemPrice)) {
+  } else if (!formItemPrice || formItemPrice <= 0) {
     console.log("Error de precio");
     document.getElementById("price-error").style.display = "block";
     event.preventDefault();
@@ -78,7 +84,11 @@ function addOrUpdateItem() {
   if (validated == 1) {
     if (operation == ADD) {
       var refItem = firebase.database().ref("store/items");
-  
+      
+      if (formItem.noexistences.checked) {
+        formItem.stock.value = 0;
+      }
+
       refItem.push({
         type: formItem.type.value,
         stock: formItem.stock.value,
@@ -89,6 +99,10 @@ function addOrUpdateItem() {
     } else {
       refItemToEdit = firebase.database().ref("store/items/" + keyItem);
   
+      if (formItem.noexistences.checked) {
+        formItem.stock.value = 0;
+      }
+
       refItemToEdit.update({
         type: formItem.type.value,
         stock: formItem.stock.value,
@@ -108,6 +122,7 @@ function addOrUpdateItem() {
 
 // THE HOLY CANCEL FUNCTION
 function cancelEditing() {
+  operation = ADD;
   editButton.style.display = "none";
   cancelButton.style.display = "none";
   createButton.style.display = "inline-block";
@@ -205,6 +220,11 @@ function editItem(event) {
   var refItemToEdit = firebase.database().ref("store/items/" + keyItem);
   refItemToEdit.once("value", function(snap) {
     var data = snap.val();
+
+    if (formItem.noexistences.checked) {
+      data.stock = 0;
+    }
+
     formItem.type.value = data.type;
     formItem.stock.value = data.stock;
     formItem.price.value = data.price;

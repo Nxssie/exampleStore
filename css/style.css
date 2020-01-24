@@ -2,6 +2,10 @@
   margin: 1em;
 }
 
+.stock-check {
+  margin-left: 1em
+}
+
 #edit-element {
   display: none;
 }
