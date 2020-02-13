@@ -25,14 +25,14 @@ function validateForm(event) {
   
   event.preventDefault();
 
+  if (formItem.noexistences.checked) {
+    formItem.stock.value = 0;
+  }
+
   const formToValidate = formItem;
   const formItemType = formToValidate["type"].value;
   const formItemStock = formToValidate["stock"].value;
   const formItemPrice = formToValidate["price"].value;
-
-  if (formItem.noexistences.checked) {
-    formItem.stock.value = 0;
-  }
 
   //Errors validations
   if (!formItemType || typeof formItemType != 'string' || formItemType instanceof String) {
