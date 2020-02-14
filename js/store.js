@@ -21,8 +21,6 @@ function initialize() {
 
 // Sick of validations, i really hate them :c
 function validateForm(event) {
-
-  
   event.preventDefault();
 
   if (formItem.noexistences.checked) {
@@ -35,11 +33,15 @@ function validateForm(event) {
   const formItemPrice = formToValidate["price"].value;
 
   //Errors validations
-  if (!formItemType || typeof formItemType != 'string' || formItemType instanceof String) {
+  if (
+    !formItemType ||
+    typeof formItemType != "string" ||
+    formItemType instanceof String
+  ) {
     console.log("Error de tipo de producto.");
     document.getElementById("type-error").style.display = "block";
     event.preventDefault();
-  } else if (!formItemStock || formItemStock <0) {
+  } else if (!formItemStock || formItemStock < 0) {
     console.log(formItemStock);
     console.log("Error de stock.");
     document.getElementById("stock-error").style.display = "block";
@@ -55,7 +57,7 @@ function validateForm(event) {
     validated = 1;
     addOrUpdateItem();
   }
-  
+
   //Clear errors in each case
   if (formItemType) {
     document.getElementById("type-error").style.display = "none";
@@ -66,7 +68,6 @@ function validateForm(event) {
   if (formItemPrice) {
     document.getElementById("price-error").style.display = "none";
   }
-
 }
 
 // Words enough :rotfl
@@ -79,40 +80,69 @@ function captureFormCancel() {
   formItem.addEventListener("reset", cancelEditing);
 }
 
-// Adding some things to my inventory 
+// Adding some things to my inventory
 function addOrUpdateItem() {
+
+  var file = formItem.image.files[0];
+  var fileName = file.name;
+  
   if (validated == 1) {
     if (operation == ADD) {
       var refItem = firebase.database().ref("store/items");
-      
+
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
       }
 
-      refItem.push({
-        type: formItem.type.value,
-        stock: formItem.stock.value,
-        price: formItem.price.value
+
+      var ref = firebase.storage().ref().child(fileName);
+      ref.put(file).then(function (snapshot) {
+        console.log('Uploaded a blob or file!');
+
+        ref.getDownloadURL().then(function (url) {
+
+          var refDatabase = firebase.database().ref().child("store/items");
+          refDatabase.push({
+            type: formItem.type.value,
+            stock: formItem.stock.value,
+            price: formItem.price.value,
+            image_url: url
+          });
+        }).catch(function (error) {
+          // Handle any errors
+        });
       });
-  
       formItem.reset();
     } else {
       refItemToEdit = firebase.database().ref("store/items/" + keyItem);
-  
+
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
       }
 
-      refItemToEdit.update({
-        type: formItem.type.value,
-        stock: formItem.stock.value,
-        price: formItem.price.value
-      });
       
+      var ref = firebase.storage().ref().child(fileName);
+      ref.put(file).then(function (snapshot) {
+        console.log('Uploaded a blob or file!');
+
+        ref.getDownloadURL().then(function (url) {
+
+          var refDatabase = firebase.database().ref().child("store/items");
+          refItemToEdit.update({
+            type: formItem.type.value,
+            stock: formItem.stock.value,
+            price: formItem.price.value,
+            image_url: url
+          });
+        }).catch(function (error) {
+          // Handle any errors
+        });
+      });
+
       editButton.style.display = "none";
       cancelButton.style.display = "none";
       createButton.style.display = "inline-block";
-  
+
       formItem.reset();
     }
   } else {
@@ -164,19 +194,13 @@ function showItems(snap) {
   for (var key in data) {
     rows +=
       "<tr>" +
-      "<td>" +
-      data[key].type +
-      "</td>" +
-      "<td>" +
-      data[key].stock +
-      "</td>" +
-      "<td>" +
-      data[key].price +
-      "</td>" +
-      '<td> <i class="fas fa-trash-alt remover" data-item="' +
-      key +
-      '"></i> <i class="fas fa-edit editor" data-item="' +
-      key +
+      "<td>" + data[key].img + "</td>" +
+      "<td>" + data[key].type + "</td>" +
+      "<td>" + data[key].stock + "</td>" +
+      "<td>" + data[key].price + "</td>" +
+      '<td>' +
+      '<i class="fas fa-trash-alt remover" data-item="' + key +
+      '"></i> <i class="fas fa-edit editor" data-item="' + key +
       '"></i> </td>' +
       "</tr>";
   }
@@ -218,7 +242,7 @@ function editItem(event) {
 
   keyItem = buttonClicked.getAttribute("data-item");
   var refItemToEdit = firebase.database().ref("store/items/" + keyItem);
-  refItemToEdit.once("value", function(snap) {
+  refItemToEdit.once("value", function (snap) {
     var data = snap.val();
 
     if (formItem.noexistences.checked) {
@@ -229,5 +253,4 @@ function editItem(event) {
     formItem.stock.value = data.stock;
     formItem.price.value = data.price;
   });
-
 }
