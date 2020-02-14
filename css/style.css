@@ -1,7 +1,3 @@
-.editor {
-  margin: 1em;
-}
-
 .stock-check {
   margin-left: 1em
 }
@@ -33,6 +29,13 @@ font-size: 11px;
 }
 
 #price-error {
+  display: none;
+  color: red;
+  font-style: oblique;
+  font-size: 11px;
+}
+
+#image-error {
   display: none;
   color: red;
   font-style: oblique;
