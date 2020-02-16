@@ -2,9 +2,9 @@ window.onload = initialize;
 
 const ADD = "add";
 const UPDATE = "update";
-var operation = ADD;
-var keyItem;
-var validated = 0;
+let operation = ADD;
+let keyItem;
+let validated = 0;
 
 const cancelButton = document.getElementById("cancel-button");
 const editButton = document.getElementById("edit-element");
@@ -83,25 +83,27 @@ function captureFormCancel() {
 // Adding some things to my inventory
 function addOrUpdateItem() {
 
-  var file = formItem.image.files[0];
-  var fileName = file.name;
+  let file = formItem.image.files[0];
+  let fileName = file.name;
   
   if (validated == 1) {
     if (operation == ADD) {
-      var refItem = firebase.database().ref("store/items");
+      let refItem = firebase.database().ref("store/items");
 
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
       }
 
 
-      var ref = firebase.storage().ref().child(fileName);
+      let ref = firebase.storage().ref().child(fileName);
       ref.put(file).then(function (snapshot) {
         console.log('Uploaded a blob or file!');
+        console.log(formItem);
+        formItem.stock.value = 10;
 
         ref.getDownloadURL().then(function (url) {
 
-          var refDatabase = firebase.database().ref().child("store/items");
+          let refDatabase = firebase.database().ref("store/items");
           refDatabase.push({
             type: formItem.type.value,
             stock: formItem.stock.value,
@@ -109,7 +111,7 @@ function addOrUpdateItem() {
             image_url: url
           });
         }).catch(function (error) {
-          // Handle any errors
+          console.log(error);
         });
       });
       formItem.reset();
@@ -121,13 +123,13 @@ function addOrUpdateItem() {
       }
 
       
-      var ref = firebase.storage().ref().child(fileName);
+      let ref = firebase.storage().ref().child(fileName);
       ref.put(file).then(function (snapshot) {
         console.log('Uploaded a blob or file!');
 
         ref.getDownloadURL().then(function (url) {
 
-          var refDatabase = firebase.database().ref().child("store/items");
+          let refDatabase = firebase.database().ref().child("store/items");
           refItemToEdit.update({
             type: formItem.type.value,
             stock: formItem.stock.value,
@@ -165,7 +167,7 @@ function cancelEditing() {
 
 // This is the most boring part of the code, just close your eyes, please
 function initializeFirebase() {
-  var firebaseConfig = {
+  let firebaseConfig = {
     apiKey: "AIzaSyAmDr6GpyPE4utgKJTLAZzjUbIwXJ767Ls",
     authDomain: "examplestore-1b638.firebaseapp.com",
     databaseURL: "https://examplestore-1b638.firebaseio.com",
@@ -181,20 +183,23 @@ function initializeFirebase() {
 
 // YEY visualizing!!
 function downloadItems() {
-  var items = firebase.database().ref("store/items");
+  let items = firebase.database().ref("store/items");
   items.on("value", showItems);
   //console.log("downloadItems function end itself execution.");
 }
 
 function showItems(snap) {
-  var data = snap.val();
+  let data = snap.val();
 
-  var rows = "";
+  let rows = "";
 
-  for (var key in data) {
+  for (let key in data) {
     rows +=
       "<tr>" +
-      "<td>" + data[key].img + "</td>" +
+      "<td>" +
+      '<img data-bicycle-id="' + key + '" class="img-fluid imgOnDB" src="' + 
+                           data[key].image_url + '" alt="image"/>' +
+      "</td>" +
       "<td>" + data[key].type + "</td>" +
       "<td>" + data[key].stock + "</td>" +
       "<td>" + data[key].price + "</td>" +
@@ -205,14 +210,14 @@ function showItems(snap) {
       "</tr>";
   }
 
-  var myItemBody = document.getElementById("my-item-list");
+  let myItemBody = document.getElementById("my-item-list");
   myItemBody.innerHTML = rows;
   //console.log("showItems function ends itself execution.");
 
   /* User actions */
-  var removers = document.getElementsByClassName("remover");
-  var editors = document.getElementsByClassName("editor");
-  for (var i = 0; i < removers.length; i++) {
+  let removers = document.getElementsByClassName("remover");
+  let editors = document.getElementsByClassName("editor");
+  for (let i = 0; i < removers.length; i++) {
     removers[i].addEventListener("click", deleteItem);
     editors[i].addEventListener("click", editItem);
   }
@@ -220,10 +225,10 @@ function showItems(snap) {
 
 // See you again https://www.youtube.com/watch?v=RgKAFK5djSk
 function deleteItem(event) {
-  var buttonClicked = event.target;
+  let buttonClicked = event.target;
 
-  var keyItemToDelete = buttonClicked.getAttribute("data-item");
-  var refItemToDelete = firebase
+  let keyItemToDelete = buttonClicked.getAttribute("data-item");
+  let refItemToDelete = firebase
     .database()
     .ref("store/items/" + keyItemToDelete);
   refItemToDelete.remove();
@@ -236,14 +241,14 @@ function editItem(event) {
   document.getElementById("create-element").style.display = "none";
   operation = UPDATE;
 
-  var buttonClicked = event.target;
+  let buttonClicked = event.target;
 
-  var formItem = document.getElementById("form-item");
+  let formItem = document.getElementById("form-item");
 
   keyItem = buttonClicked.getAttribute("data-item");
-  var refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+  let refItemToEdit = firebase.database().ref("store/items/" + keyItem);
   refItemToEdit.once("value", function (snap) {
-    var data = snap.val();
+    let data = snap.val();
 
     if (formItem.noexistences.checked) {
       data.stock = 0;
