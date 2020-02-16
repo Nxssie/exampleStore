@@ -1,5 +1,3 @@
-window.onload = initialize;
-
 const ADD = "add";
 const UPDATE = "update";
 let operation = ADD;
@@ -11,9 +9,7 @@ const editButton = document.getElementById("edit-element");
 const createButton = document.getElementById("create-element");
 const formItem = document.getElementById("form-item");
 
-function initialize() {
-  initializeFirebase();
-
+export function storeInitialize() {
   captureSubmitEventWhenAddingAnItem();
   captureFormCancel();
   downloadItems();
@@ -90,7 +86,6 @@ function addOrUpdateItem() {
     if (operation == ADD) {
 
       var refItem = firebase.database().ref("store/items");
-
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
       }
@@ -112,7 +107,7 @@ function addOrUpdateItem() {
       });
       formItem.reset();
     } else {
-      refItemToEdit = firebase.database().ref("store/items/" + keyItem);
+      let refItemToEdit = firebase.database().ref("store/items/" + keyItem);
 
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
@@ -159,22 +154,6 @@ function cancelEditing() {
   document.getElementById("type-error").style.display = "none";
   document.getElementById("stock-error").style.display = "none";
   document.getElementById("price-error").style.display = "none";
-}
-
-// This is the most boring part of the code, just close your eyes, please
-function initializeFirebase() {
-  let firebaseConfig = {
-    apiKey: "AIzaSyAmDr6GpyPE4utgKJTLAZzjUbIwXJ767Ls",
-    authDomain: "examplestore-1b638.firebaseapp.com",
-    databaseURL: "https://examplestore-1b638.firebaseio.com",
-    projectId: "examplestore-1b638",
-    storageBucket: "examplestore-1b638.appspot.com",
-    messagingSenderId: "821111168891",
-    appId: "1:821111168891:web:8a0aa658ed6acd5871e7de"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  console.log("firebase initializated");
 }
 
 // YEY visualizing!!

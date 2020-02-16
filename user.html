@@ -1,10 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>User</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Own CSS -->
+    <link rel="stylesheet" href="css/user.css">
+
 </head>
+
 <body>
-$END$
+    <!-- Button to open the modal -->
+    <button class="btn btn-primary" id="register-button">Registrarse</button>
+    <button class="btn btn-secondary" id="login-button">Iniciar sesión</button>
+
+
+    <!-- The Modal (contains the Sign Up form) -->
+    <div id="id01" class="modal">
+        <div>
+            <i class="fas fa-times" id="close-button"></i>
+        </div>
+        <form class="modal-content" id="registerForm">
+            <div class="container">
+                <h1>Registro</h1>
+                <p>Completa este formulario para el registro.</p>
+                <hr>
+                <label for="email"><b>Email</b></label>
+                <input type="text" placeholder="Introduce un email" name="email" required>
+
+                <label for="psw"><b>Contraseña</b></label>
+                <input type="password" placeholder="Introduce una contraseña" name="psw" required>
+
+                <div class="clearfix">
+                    <button type="button" class="btn btn-danger" id="cancel-button">Cancelar</button>
+                    <button type="submit" class="signup" id="register-submit">Registrarme</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Optional JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase.js"></script>
+    <script type="module" src="js/loader.js"></script>
+    <script type="module" src="js/store.js"></script>
+    <script type="module" src="js/login.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
