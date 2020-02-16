@@ -88,23 +88,19 @@ function addOrUpdateItem() {
   
   if (validated == 1) {
     if (operation == ADD) {
-      let refItem = firebase.database().ref("store/items");
+
+      var refItem = firebase.database().ref("store/items");
 
       if (formItem.noexistences.checked) {
         formItem.stock.value = 0;
       }
 
-
       let ref = firebase.storage().ref().child(fileName);
       ref.put(file).then(function (snapshot) {
         console.log('Uploaded a blob or file!');
-        console.log(formItem);
-        formItem.stock.value = 10;
 
         ref.getDownloadURL().then(function (url) {
-
-          let refDatabase = firebase.database().ref("store/items");
-          refDatabase.push({
+          refItem.push({
             type: formItem.type.value,
             stock: formItem.stock.value,
             price: formItem.price.value,
