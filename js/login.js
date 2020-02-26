@@ -1,12 +1,9 @@
 //I hate global variables as a normal developer should do. I promise.
-
+const registerForm = document.getElementById("register-form");
 
 
 export function loginInitialize() {
     buttonsListeners();
-
-    register();
-    login();
 }
 
 let buttonsListeners = () => {
@@ -30,15 +27,13 @@ let buttonsListeners = () => {
     registerSubmit.addEventListener("submit", register);
 }
 
-let register = () => {
-    let email = document.getElementById("registerForm").email.value;
-    let password = document.getElementById("registerForm").psw.value;
-    let validated = 0;
+function register (event) {
+    event.preventDefault();
+    let email = event.target.email.value;
+    let password = event.target.psw.value;
 
-    if (validated == 0) {
-        //Future validation?
-        validated = 1;
-    }
+    console.log(email);
+    console.log(password);
     
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
         // Handle Errors here.
@@ -47,8 +42,7 @@ let register = () => {
         // ...
     });
     console.log("Signed Up");
-
-};
+}
 
 let login = () => {
   console.log("Logged in")  ;

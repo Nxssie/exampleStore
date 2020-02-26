@@ -6,8 +6,15 @@ import {loginInitialize} from "./login.js";
 
 function initialize() {
     initializeFirebase();
-    loginInitialize();
-    storeInitialize();
+
+    if(document.getElementById("register-form")) {
+        loginInitialize();
+    }
+
+    if(document.getElementById("form-item")) {
+        storeInitialize();
+    }
+
 
 }
 
